@@ -35,7 +35,7 @@ config :phoenix_boilerplate, PhoenixBoilerplateWeb.Endpoint,
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start each relevant endpoint:
 #
-#     config :phoenix_boilerplate, PhoenixBoilerplateWeb.Endpoint, server: true
+config :phoenix_boilerplate, PhoenixBoilerplateWeb.Endpoint, server: true
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
