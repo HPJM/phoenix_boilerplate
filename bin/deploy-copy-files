@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Copy files to target or staging directory
+#
+# This is useful when installing on the local machine or packaging files.
+
+set -e
+
+# Environment vars
+# DESTDIR, prefix for target files, optional
+
+# Config vars
+DEPLOY_USER="${DEPLOY_USER:-"deploy"}"
+APP_GROUP="${APP_GROUP:-"app"}"
+
+# Read-write by root
+chmod 600 "${DESTDIR}/lib/systemd/system/"

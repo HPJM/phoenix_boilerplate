@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Restart services on target
+
+set -e
+
+# Config vars
+SERVICE_NAME="${SERVICE_NAME:-"phoenix_boilerplate"}"
+
+/bin/systemctl restart "${SERVICE_NAME}"

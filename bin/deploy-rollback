@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Rollback release to previous
+# Local deploy
+
+set -e
+
+# Environment vars
+# DESTDIR, prefix for target files, optional
+
+# Config vars
+DEPLOY_DIR="${DEPLOY_DIR:-"/srv/phoenix_boilerplate"}"
+
+RELEASES_DIR="${DESTDIR}${RELEASES_DIR:-/srv/phoenix_boilerplate/releases}"
+CURRENT_LINK="${DESTDIR}${CURRENT_DIR:-/srv/phoenix_boilerplate/current}"
+# TODO: error handling
+PREV_DIR=$(find -H "${RELEASES_DIR}" -maxdepth 1 | sort | tail -2 | head -1)
+PREV_NAME=$(basename "${PREV_DIR}")
+RELEASE="${RELEASE:-$PREV_NAME}"
+
+echo "==> Rolling back to release $RELEASE"
+if [[ -L "$CURRENT_LINK" ]]; then
+    rm "$CURRENT_LINK"
+fi
+ln -s "${RELEASES_DIR}/${PREV_NAME}" "$CURRENT_LINK"

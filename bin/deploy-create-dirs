@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# Create app dirs on target or staging dir
+#
+# This creates the release directory structure, e.g. /srv/foo,
+# and may create app dirs such as /etc/foo when they
+# are not automatically created by systemd.
+
+set -e
+
+# Environment vars
+# DESTDIR, prefix for target files, optional
+
+# Config vars
+DEPLOY_USER="${DEPLOY_USER:-"deploy"}"
+APP_GROUP="${APP_GROUP:-"app"}"
+
+# If directory doesn't exist, create it
+if [ ! -d "${DESTDIR}/srv/phoenix_boilerplate" ]; then
+  mkdir -v -p "${DESTDIR}/srv/phoenix_boilerplate"
+  # Change ownership of dir
+  chown $DEPLOY_USER:$APP_GROUP "${DESTDIR}/srv/phoenix_boilerplate"
+  # Give all permissions to deploy user, execute to app group
+  chmod 750 "${DESTDIR}/srv/phoenix_boilerplate"
+fi
+
+# Repeat for other dirs
+
+if [ ! -d "${DESTDIR}/srv/phoenix_boilerplate/releases" ]; then
+  mkdir -v -p "${DESTDIR}/srv/phoenix_boilerplate/releases"
+  chown $DEPLOY_USER:$APP_GROUP "${DESTDIR}/srv/phoenix_boilerplate/releases"
+  chmod 750 "${DESTDIR}/srv/phoenix_boilerplate/releases"
+fi
+
+if [ ! -d "${DESTDIR}/srv/phoenix_boilerplate/bin" ]; then
+  mkdir -v -p "${DESTDIR}/srv/phoenix_boilerplate/bin"
+  chown $DEPLOY_USER:$APP_GROUP "${DESTDIR}/srv/phoenix_boilerplate/bin"
+  chmod 750 "${DESTDIR}/srv/phoenix_boilerplate/bin"
+fi
+
+if [ ! -d "${DESTDIR}/srv/phoenix_boilerplate/etc" ]; then
+  mkdir -v -p "${DESTDIR}/srv/phoenix_boilerplate/etc"
+  chown $DEPLOY_USER:$APP_GROUP "${DESTDIR}/srv/phoenix_boilerplate/etc"
+  chmod 750 "${DESTDIR}/srv/phoenix_boilerplate/etc"
+fi
+
+
+if [ ! -d "${DESTDIR}/lib/systemd/system" ]; then
+  mkdir -v -p "${DESTDIR}/lib/systemd/system"
+fi

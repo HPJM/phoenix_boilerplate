@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Start services on target
+
+set -e
+
+# Config vars
+SERVICE_NAME="${SERVICE_NAME:-"phoenix_boilerplate"}"
+
+/bin/systemctl start "${SERVICE_NAME}"

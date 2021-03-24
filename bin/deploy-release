@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Deploy release from local build
+
+set -e
+
+# Environment vars
+# DESTDIR, prefix for target files, optional
+
+MIX_ENV="${MIX_ENV:-prod}"
+RELEASE_VSN="${RELEASE_VSN:-"0.1.0"}"
+RELEASE_NAME="${RELEASE_NAME:-"phoenix_boilerplate"}"
+
+# Config vars
+DEPLOY_USER="${DEPLOY_USER:-"deploy"}"
+APP_GROUP="${APP_USER:-"app"}"
+
+# Symlink to current release
+CURRENT_DIR="${CURRENT_DIR:-"/srv/phoenix_boilerplate/current"}"
+RELEASES_DIR="${RELEASES_DIR:-"/srv/phoenix_boilerplate/releases"}"
+
+CURRENT_LINK="${DESTDIR}${CURRENT_DIR}"
+
+TAR_FILE="_build/${MIX_ENV}/${RELEASE_NAME}-${RELEASE_VSN}.tar.gz"
+
+TIMESTAMP=$(date +%Y%m%d%H%M%S)
+RELEASE_DIR="${DESTDIR}${RELEASES_DIR}/${TIMESTAMP}"
+
+echo "==> Deploying release $RELEASE_VSN to $RELEASE_DIR"
+mkdir -p "$RELEASE_DIR"
+
+echo "===> Extracting release from tar file $TAR_FILE"
+# -C: directory
+# -x: extract
+# -f: use tarfile produced by release
+tar -C "$RELEASE_DIR" -xf "$TAR_FILE"
+
+# Recursively give deploy user and app group ownership
+chown -R ${DEPLOY_USER}:${APP_GROUP} "${RELEASE_DIR}"
+
+# Remove existing symlink if exists and point current dir to new release
+echo "===> Setting current symlink $CURRENT_LINK"
+if [[ -L "$CURRENT_LINK" ]]; then
+    rm "$CURRENT_LINK"
+fi
+ln -s "$RELEASE_DIR" "$CURRENT_LINK"
+
+echo "===> Setting file permissions for release executables"
+# Ensure that app OS user can use group permissions to execute files in release
+chown -R $DEPLOY_USER:$APP_GROUP "$CURRENT_DIR"
+find -H $CURRENT_LINK -executable -type f -exec chmod g+x {} \;

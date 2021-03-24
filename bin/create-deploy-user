@@ -1,0 +1,32 @@
+#!/usr/bin/bash
+
+# Create `deploy` user
+# -m: creates home directory
+# -s: set shell
+useradd -m -s /bin/bash deploy
+
+# Give deploy user sudo privileges
+echo "deploy ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/10-app-deploy
+
+# Create `.ssh` and `build` dirs
+mkdir ~deploy/.ssh
+mkdir ~deploy/build
+
+# Give deploy user and group ownership over these dirs
+chown deploy:deploy ~deploy/.ssh
+chown deploy:deploy ~deploy/build
+
+# Only give rwx permissions to deploy user
+chmod 700 ~deploy/.ssh
+
+# Note: may need to copy from root on other servers
+cp ~ubuntu/.ssh/authorized_keys ~deploy/.ssh
+
+# Give ownership of this file to deploy user
+chown deploy:deploy ~deploy/.ssh/authorized_keys
+
+# Read-write access only by deploy user
+chmod 600 ~deploy/.ssh/authorized_keys
+
+# Remove key for ubuntu
+rm ~ubuntu/.ssh/authorized_keys

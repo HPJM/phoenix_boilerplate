@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Create user accounts on target
+#
+# Useful when deploying locally or on target.
+
+set -e
+
+# Config vars
+DEPLOY_USER="${DEPLOY_USER:-"deploy"}"
+APP_USER="${APP_USER:-"app"}"
+
+# If there isn't a user, then this will create them
+if ! id -u "$APP_USER" > /dev/null &>/dev/null; then
+    echo "==> Creating app user $APP_USER"
+    useradd -m -s /bin/bash "$APP_USER"
+fi
+
+if ! id -u "$DEPLOY_USER" > /dev/null &>/dev/null; then
+    echo "==> Creating deploy user $DEPLOY_USER"
+    useradd -m -s /bin/bash "$DEPLOY_USER"
+fi
+
+# Put deploy user in app group
+usermod -a -G "$APP_USER" "$DEPLOY_USER"

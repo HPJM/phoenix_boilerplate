@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Build task
+
+set -e
+
+export LANG="${LANG:-"en_US.UTF-8"}"
+export MIX_ENV="${MIX_ENV:-prod}"
+export RELEASE_NAME="${RELEASE_NAME:-phoenix_boilerplate}"
+
+CURDIR="$PWD"
+BINDIR=$(dirname "$0")
+cd "$BINDIR"; BINDIR="$PWD"; cd "$CURDIR"
+
+BASEDIR="$BINDIR/.."
+cd "$BASEDIR"
+
+export PORT=4000
+
+echo "==> Running build task"
+
+echo "===> Installing Hex and Rebar"
+mix local.hex --force
+mix local.rebar --force
+
+echo "===> Updating Elixir libs"
+mix deps.get --only "$MIX_ENV"
+
+echo "===> Compiling"
+mix compile
+
+echo "===> Installing node modules"
+(cd assets && npm install)
+
+echo "===> Generating assets"
+npm run deploy --prefix ./assets
+
+echo "Building digest files"
+mix phx.digest
+
+chmod +x bin/*
+
+echo "===> Building release"
+mix release --overwrite "$RELEASE_NAME"

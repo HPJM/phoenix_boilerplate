@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Enable systemd units on target
+# This has the effect of reloading them if they have changed.
+
+set -e
+
+# Config vars
+SERVICE_NAME="${SERVICE_NAME:-"phoenix_boilerplate"}"
+
+echo "==> Enabling systemd unit $SERVICE_NAME"
+/bin/systemctl enable "${SERVICE_NAME}"
+

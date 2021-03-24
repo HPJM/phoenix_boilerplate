@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Run remote console
+
+# This is normally run under the app user account.
+# It is primarily useful for Distillery, which may
+# need to load environment vars before starting.
+# mix releases can use env.sh
+
+# The release will, in general, need to have a writable directory to process
+# the application environment, set with RELEASE_TMP or RELEASE_MUTABLE_DIR
+
+# Exit on errors
+set -e
+
+# Config vars
+CURRENT_DIR="${CURRENT_DIR:-"/srv/phoenix_boilerplate/current"}"
+RELEASE_NAME="${RELEASE_NAME:-"phoenix_boilerplate"}"
+
+$CURRENT_DIR/bin/$RELEASE_NAME remote

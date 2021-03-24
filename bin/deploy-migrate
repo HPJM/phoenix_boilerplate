@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Run database migrations before starting
+
+# This is normally run under the app OS user.
+# It assumes that config is loaded by release config providers and env.sh.
+
+# The release will, in general, need to have a writable directory to process
+# the application environment, set with RELEASE_TMP or RELEASE_MUTABLE_DIR
+
+# Exit on errors
+set -e
+
+# Config vars
+CURRENT_DIR="${CURRENT_DIR:-"/srv/phoenix_boilerplate/current"}"
+RELEASE_NAME="${RELEASE_NAME:-"phoenix_boilerplate"}"
+
+MIGRATE_FUNCTION="${MIGRATE_FUNCTION:-"PhoenixBoilerplate.Release.migrate"}"
+$CURRENT_DIR/bin/$RELEASE_NAME eval "$MIGRATE_FUNCTION"
