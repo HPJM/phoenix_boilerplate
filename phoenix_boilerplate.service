@@ -1,0 +1,33 @@
+[Unit]
+Description=phoenix_boilerplate service
+After=local-fs.target network.target
+
+[Service]
+Type=simple
+User=app
+Group=app
+WorkingDirectory=/srv/phoenix_boilerplate/current
+
+ExecStartPre=/srv/phoenix_boilerplate/bin/deploy-migrate
+
+ExecStart=/srv/phoenix_boilerplate/current/bin/phoenix_boilerplate start
+ExecStop=/srv/phoenix_boilerplate/current/bin/phoenix_boilerplate stop
+Environment=LANG=en_US.utf8
+Environment=MIX_ENV=prod
+Environment=RUNTIME_DIR=/run/phoenix_boilerplate
+
+EnvironmentFile=-/srv/phoenix_boilerplate/etc/environment
+
+Environment=RELEASE_TMP=/run/phoenix_boilerplate
+
+LimitNOFILE=65535
+UMask=0027
+SyslogIdentifier=phoenix_boilerplate
+Restart=always
+
+RuntimeDirectory=phoenix_boilerplate
+RuntimeDirectoryMode=750
+RuntimeDirectoryPreserve=no
+
+[Install]
+WantedBy=multi-user.target
