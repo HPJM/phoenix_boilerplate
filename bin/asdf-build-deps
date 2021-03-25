@@ -1,0 +1,4 @@
+echo "===> Installing build deps with ASDF"
+asdf install
+# Run it again to make sure all the plugins ran, as there have been issues with return codes in the past
+asdf install
