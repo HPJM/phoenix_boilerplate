@@ -1,0 +1,14 @@
+---
+# tasks file for app
+
+- include_tasks: dirs.yml
+  tags: ["dirs"]
+
+- include_tasks: systemd.yml
+  tags: ["systemd"]
+
+- include_tasks: scripts.yml
+  tags: ["scripts"]
+
+- import_tasks: deploy.yml
+  tags: ["deploy"]

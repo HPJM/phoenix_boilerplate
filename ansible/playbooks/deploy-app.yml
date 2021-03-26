@@ -1,0 +1,4 @@
+- hosts: "*"
+  become: true
+  roles:
+    - elixir-release
