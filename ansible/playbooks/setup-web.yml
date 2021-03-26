@@ -1,0 +1,6 @@
+- name: Manage users
+  hosts: "*"
+  become: true
+  roles:
+    - users
+# TODO: iptables

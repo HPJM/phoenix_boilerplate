@@ -1,0 +1,5 @@
+# App deployment settings
+# See roles.galaxy/cogini.elixir-release/defaults/main.yml for all the options
+
+# Erlang application name
+elixir_release_app_name: phoenix_boilerplate

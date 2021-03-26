@@ -1,0 +1,6 @@
+# These are the default vars that apply to all servers
+
+# Create project level admins with sudo permissions, e.g. for
+# project tech leads
+# users_admin_users:
+#   - jake
