@@ -26,8 +26,11 @@ Make sure to change all references to `[app]` to the app name.
 
 ## 4. Install deps
 
-- [Alternative with ASDF](https://www.cogini.com/blog/using-asdf-with-elixir-and-phoenix/)
-- Run `LANG=en_US.UTF-8 sudo bin/build-install-ubuntu-deps`
+- `bin/asdf-deps`
+- `bin/asdf`
+- Log out and back in
+- `bin/asdf-install`
+- Check app compiles
 
 ## 5. Install and configure Postgres (if DB on same host)
 
