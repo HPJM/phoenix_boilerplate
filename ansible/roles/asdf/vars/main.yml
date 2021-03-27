@@ -1,0 +1,6 @@
+---
+# vars file for asdf
+ansible_become: True
+
+# 24h
+apt_cache_valid_time: 86400

@@ -49,7 +49,7 @@ RestartSec={{ elixir_release_systemd_restart_sec }}
 
 {% if 'runtime' in elixir_release_app_dirs %}
 RuntimeDirectory={{ elixir_release_runtime_directory }}
-RuntimeDirectoryMode={{ elixir_release_runtime_directory_mode }} TODO: convert to string
+RuntimeDirectoryMode={{ elixir_release_runtime_directory_mode }}
 {% if elixir_release_systemd_version >= 235 %}
 RuntimeDirectoryPreserve={{ elixir_release_runtime_directory_preserve }}
 {% endif %}

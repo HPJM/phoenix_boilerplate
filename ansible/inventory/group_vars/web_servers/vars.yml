@@ -19,6 +19,7 @@ users_deploy_groups:
 # This is needed to deploy the app
 users_deploy_users:
   - "{{ elixir_release_deploy_user }}"
+  - hugo
 # Users who can ssh into the app account
 # This is not strictly needed, but can be useful for devs
 #

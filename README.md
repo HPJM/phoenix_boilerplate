@@ -1,3 +1,10 @@
+# Server setup
+
+- Once provisioned run: `ansible-playbook -u ubuntu -v -l web_servers playbooks/setup-web.yml -D -i inventory`
+- After that, `ubuntu` user won't be available
+- Set up app `ansible-playbook -u hugo -v -l web_servers playbooks/deploy-app.yml --skip-tags deploy -D`
+- Build `ansible-playbook -u hugo -v -l build_servers playbooks/setup-build.yml -D`
+
 # Build
 
 Assumes building on Ubuntu 20.04 (AWS).

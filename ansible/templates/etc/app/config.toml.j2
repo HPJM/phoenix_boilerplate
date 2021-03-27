@@ -1,0 +1,11 @@
+[{{ elixir_release_app_name }}."{{ elixir_release_app_module }}.Repo"]
+username = "{{ db_username }}"
+password = "{{ db_password }}"
+database = "{{ db_database }}"
+hostname = "{{ db_hostname }}"
+adapter = "{{ db_adapter }}"
+ssl = {{ db_ssl }}
+pool_size = {{ db_pool_size }}
+
+[{{ elixir_release_app_name }}."{{ elixir_release_app_module }}Web.Endpoint"]
+secret_key_base = "{{ secret_key_base }}"

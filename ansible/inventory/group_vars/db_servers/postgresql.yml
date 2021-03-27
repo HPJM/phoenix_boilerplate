@@ -1,5 +1,5 @@
 # Vars for web-servers group
-postgresql_version: 13
+postgresql_version: 11
 
 postgresql_users:
   - name: "{{ db_username }}"
