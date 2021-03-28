@@ -11,31 +11,25 @@
     elixir_release_timestamp: "{{ ansible_date_time['iso8601_basic_short'] }}"
 
 - block:
-  - name: Get release version file
-    set_fact:
-      elixir_release_version_file: "{{ elixir_release_local_dir }}/start_erl.data"
+    - name: Get release version file
+      set_fact:
+        elixir_release_version_file: "{{ elixir_release_local_dir }}/start_erl.data"
 
-  - name: Get release version data
-    set_fact:
-      elixir_release_version_data: "{{ lookup('file', elixir_release_version_file) }}"
+    - name: Get release version data
+      shell: /bin/cat {{ elixir_release_version_file }}
+      register: elixir_release_version_data
 
-  - name: Get app version
-    set_fact:
-      elixir_release_version: "{{ elixir_release_version_data.split(' ')[-1] }}"
+    - name: Get app version
+      set_fact:
+        elixir_release_version: "{{ elixir_release_version_data.stdout.split(' ')[-1] }}"
 
   when: elixir_release_version is not defined
 
 - block:
-  - name: Get local release file
-    set_fact:
-      elixir_release_local_release_file: "{{ elixir_release_src_dir }}/_build/{{ elixir_release_mix_env }}/{{ elixir_release_release_name }}-{{ elixir_release_version }}.tar.gz"
+    - name: Get release file
+      set_fact:
+        elixir_release_local_release_file: "{{ elixir_release_src_dir }}/_build/{{ elixir_release_mix_env }}/{{ elixir_release_release_name }}-{{ elixir_release_version }}.tar.gz"
   when: elixir_release_release_system == "mix"
-
-- block:
-  - name: Get local release file
-    set_fact:
-      elixir_release_local_release_file: "{{ elixir_release_local_dir }}/{{ elixir_release_version }}/{{ elixir_release_release_name }}.tar.gz"
-  when: elixir_release_release_system == "distillery"
 
 - name: Create releases dir
   file:
@@ -46,36 +40,36 @@
     mode: 0750
 
 - block:
-  - name: Upload release
-    unarchive: src={{ elixir_release_local_release_file }} dest={{ elixir_release_releases_dir }}/{{ elixir_release_timestamp }}
+    - name: Upload release
+      unarchive: remote_src=true src={{ elixir_release_local_release_file }} dest={{ elixir_release_releases_dir }}/{{ elixir_release_timestamp }}
 
-  - name: Stat current
-    stat:
-      path: "{{ elixir_release_current_dir }}"
-    register: current
+    - name: Stat current
+      stat:
+        path: "{{ elixir_release_current_dir }}"
+      register: current
 
-  - name: Rename current directory
-    command:
-      cmd: mv "{{ elixir_release_current_dir }}" "{{ elixir_release_current_dir }}.old"
-      creates: "{{ elixir_release_current_dir }}.old"
-      removes: "{{ elixir_release_current_dir }}"
-    when: (current.stat.islnk is defined and current.stat.islnk) or (current.stat.exists and current.stat.isdir)
+    - name: Rename current directory
+      command:
+        cmd: mv "{{ elixir_release_current_dir }}" "{{ elixir_release_current_dir }}.old"
+        creates: "{{ elixir_release_current_dir }}.old"
+        removes: "{{ elixir_release_current_dir }}"
+      when: (current.stat.islnk is defined and current.stat.islnk) or (current.stat.exists and current.stat.isdir)
 
-  - name: Create current symlink
-    file: src={{ elixir_release_releases_dir }}/{{ elixir_release_timestamp }} dest={{ elixir_release_current_dir }} state=link
+    - name: Create current symlink
+      file: src={{ elixir_release_releases_dir }}/{{ elixir_release_timestamp }} dest={{ elixir_release_current_dir }} state=link
 
-  - name: Set permissions on release files so app can access them
-    # file:
-    #   path: "{{ item }}"
-    #   owner: "{{ elixir_release_deploy_user }}"
-    #   group: "{{ elixir_release_app_group }}"
-    #   recurse: "yes"
-    #   path: "{{ elixir_release_current_dir }}"
-    # recurse doesn't work on symlinks
-    command: find -H {{ elixir_release_current_dir }} -exec chown {{ elixir_release_deploy_user }}:{{ elixir_release_app_group }} {} \;
+    - name: Set permissions on release files so app can access them
+      # file:
+      #   path: "{{ item }}"
+      #   owner: "{{ elixir_release_deploy_user }}"
+      #   group: "{{ elixir_release_app_group }}"
+      #   recurse: "yes"
+      #   path: "{{ elixir_release_current_dir }}"
+      # recurse doesn't work on symlinks
+      command: find -H {{ elixir_release_current_dir }} -exec chown {{ elixir_release_deploy_user }}:{{ elixir_release_app_group }} {} \;
 
-  - name: Set permissions on release scripts so app can run them
-    command: find -H {{ elixir_release_current_dir }} -executable -type f -exec chmod g+x {} \;
+    - name: Set permissions on release scripts so app can run them
+      command: find -H {{ elixir_release_current_dir }} -executable -type f -exec chmod g+x {} \;
 
   when: not ansible_check_mode
 
@@ -89,7 +83,7 @@
   file:
     path: "{{ elixir_release_shutdown_flags_dir }}/restart.flag"
     state: touch
-    mode: '0660'
+    mode: "0660"
     owner: "{{ elixir_release_deploy_user }}"
     group: "{{ elixir_release_deploy_group }}"
   when: "elixir_release_restart_method == 'systemd_flag'"
@@ -98,7 +92,7 @@
   file:
     path: "{{ elixir_release_shutdown_flags_dir }}/restart.flag"
     state: touch
-    mode: '0660'
+    mode: "0660"
     owner: "{{ elixir_release_deploy_user }}"
     group: "{{ elixir_release_app_group }}"
   when: "elixir_release_restart_method == 'touch'"

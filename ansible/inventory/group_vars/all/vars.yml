@@ -4,3 +4,9 @@
 # project tech leads
 # users_admin_users:
 #   - jake
+
+elixir_release_deploy_user: deploy
+elixir_release_app_user: app
+# TODO: move this var elsewhere
+elixir_release_app_group: app
+elixir_release_name_module: PhoenixBoilerplate

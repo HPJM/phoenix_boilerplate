@@ -13,8 +13,6 @@
   gather_facts: true
   no_log: true
   vars:
-    # TODO: move this var elsewhere
-    elixir_release_app_group: app
     elixir_release_name: phoenix_boilerplate
     elixir_release_name_module: PhoenixBoilerplate
     elixir_release_app_module: "{{ elixir_release_app_name.split('_') | capitalize | join('') }}"

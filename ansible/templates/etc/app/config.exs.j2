@@ -1,23 +1,19 @@
 use Mix.Config
 
-# In this file, we keep production configuration that
-# you'll likely want to automate and keep away from
-# your version control system.
-#
-# You should document the content of this
-# file or create a script for recreating it, since it's
-# kept out of version control and might be hard to recover
-# or recreate for your teammates (or yourself later on).
-
-# Configure your database
-config :{{ elixir_release_name }}, {{ elixir_release_name_module }}.Repo,
+config :phoenix_boilerplate, PhoenixBoilerplate.Repo,
+  # ssl: true,
+  adapter: Ecto.Adapters.Postgres,
   username: "{{ db_username }}",
   password: "{{ db_password }}",
-  database: "{{ db_database }},
+  database: "{{ db_username }}",
   hostname: "{{ db_hostname }}",
-  adapter: "{{ db_adapter }}",
-  ssl: {{ db_ssl }},
-  pool_size: {{ db_pool_size }}
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
 
-config :{{ elixir_release_name }}, {{ elixir_release_name_module }}.Endpoint,
+config :phoenix_boilerplate, PhoenixBoilerplateWeb.Endpoint,
+  http: [
+    port: String.to_integer(System.get_env("PORT") || "4000"),
+    transport_options: [socket_opts: [:inet6]]
+  ],
   secret_key_base: "{{ secret_key_base }}"
+
+config :phoenix_boilerplate, PhoenixBoilerplateWeb.Endpoint, server: true

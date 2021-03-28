@@ -1,0 +1,66 @@
+---
+- name: Build
+  hosts: "*"
+  become_user: deploy
+  gather_facts: true
+  vars:
+    - mix_env: prod
+    - elixir_release_name: phoenix_boilerplate
+  tasks:
+    - name: Set vars
+      set_fact:
+        build_dir: "/home/{{ users_deploy_user }}/build/{{ elixir_release_name }}"
+
+    - name: Check out project from git
+      git:
+        repo: "{{ app_repo }}"
+        dest: "{{ build_dir }}"
+        version: "{{ app_version | default('HEAD') }}"
+
+    - name: Create conf file
+      template:
+        src: ../templates/etc/app/config.exs.j2
+        dest: "{{ build_dir }}/config/prod.secret.exs"
+        owner: "{{ elixir_release_deploy_user }}"
+        group: "{{ elixir_release_app_group }}"
+        mode: 0640
+
+    - name: Install Hex
+      command: bash -lc "mix local.hex --force" chdir="{{ build_dir }}"
+      environment:
+        MIX_ENV: "{{ mix_env }}"
+
+    - name: Install Rebar
+      command: bash -lc "mix local.rebar --force" chdir="{{ build_dir }}"
+      environment:
+        MIX_ENV: "{{ mix_env }}"
+
+    - name: Updating Elixir libs
+      command: bash -lc "mix deps.get --only {{ mix_env }}" chdir="{{ build_dir }}"
+      environment:
+        MIX_ENV: "{{ mix_env }}"
+
+    - name: Compile
+      command: bash -lc "mix compile" chdir="{{ build_dir }}"
+      environment:
+        MIX_ENV: "{{ mix_env }}"
+
+    - name: Fetch npm dependencies
+      command: bash -lc "cd {{ build_dir }}/assets && npm install"
+      environment:
+        MIX_ENV: "{{ mix_env }}"
+
+    - name: Generate assets
+      command: bash -lc "cd {{ build_dir }}/assets && npm run deploy"
+      environment:
+        MIX_ENV: "{{ mix_env }}"
+
+    - name: Building digest files
+      command: bash -lc "mix phx.digest" chdir="{{ build_dir }}"
+      environment:
+        MIX_ENV: "{{ mix_env }}"
+
+    - name: "Releasing {{ build_version }}"
+      command: bash -lc "mix release --overwrite {{ elixir_release_name }}" chdir="{{ build_dir }}"
+      environment:
+        MIX_ENV: "{{ mix_env }}"

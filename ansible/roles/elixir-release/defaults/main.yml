@@ -5,7 +5,7 @@
 elixir_release_release_system: "mix"
 
 # Erlang application name
-elixir_release_app_name: my_app
+elixir_release_app_name: phoenix_boilerplate
 
 # Name of release, by default app_name, but often mix_env
 elixir_release_release_name: "{{ elixir_release_app_name }}"
@@ -18,7 +18,7 @@ elixir_release_app_module: "{{ elixir_release_service_name.title().replace('_', 
 
 # Location of app source
 # Assumes ansible dir in app source repo
-elixir_release_src_dir: "{{ role_path }}/../../.."
+elixir_release_src_dir: "/home/{{ elixir_release_deploy_user }}/build/{{ elixir_release_release_name }}"
 
 # Version of the app in the release
 # If not specified, will read from file

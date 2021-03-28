@@ -88,3 +88,6 @@
         repo: "{{ app_repo }}"
         dest: "{{ build_dir }}"
         version: "{{ app_version | default('HEAD') }}"
+
+    - name: Install ASDF
+      command: bash -lc "asdf install" chdir="{{ build_dir }}"

@@ -21,10 +21,6 @@ users_users:
 #
 # The `key` field specifies a key file in the `ansible/playbooks/files` directory.
 
-# Should these go here?
-elixir_release_deploy_user: deploy
-elixir_release_app_user: app
-
 # Define admin users who will be added to every machine
 # with sudo rights, e.g. for your ops team or senior tech leads.
 users_global_admin_users:
